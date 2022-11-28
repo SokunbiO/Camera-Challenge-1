@@ -1,0 +1,162 @@
+#include <kipr/wombat.h>
+int lspeed = 90;
+int rspeed = 90;
+int rmotor = 0;
+int lmotor = 3;
+int pause = 100;
+int rslow = 90;
+int lslow = 90;
+int half = 1000;
+int hand = 0;
+int hpause = 500;
+int counter = 0;
+int red = 0;
+int green = 1;
+int blue = 2;
+int r_checker = 0;
+int count_r = 0;
+int g_checker = 0;
+int b_checker = 0;
+int count_g = 0;
+int count_b = 0;
+int count_x = 0;
+    
+void forward();
+void red_wave();
+void green_wave();
+void orange_wave();
+void left_turn();
+void whole_turn();
+
+int main()
+{
+	camera_open_black();    //open the camera
+    while (0 == 0){
+    	camera_update();
+    	msleep(100);
+      
+        if (b_checker < 1 && g_checker < 1 && r_checker < 1)
+        {
+            count_x++;
+            if(count_x== 10){
+                printf("No objects detected!\n");
+                count_x = 0;
+            }
+        }
+        
+        if(r_checker < 1)        //as long as checker is still 0, keep looping the following...
+    	{
+       
+        	if(get_object_count(red) > 0)        //if there are any red color blobs in view add to the count_t variable
+        	{
+            	count_r++;
+                count_x = 0;
+        	}
+            
+        	if(count_r == 10)            //once count_t reaches 20, add to checker which will exit the loop.
+        	{
+                red_wave();
+            	r_checker++;
+                printf("Red object detected!\n");
+                count_r = 0;
+        	}
+       		r_checker--;
+        }
+      
+    
+    	if(g_checker < 1)        //as long as checker is still 0, keep looping the following...
+    	{
+       
+        	if(get_object_count(green)>0)        //if there are any green color blobs in view add to the count_g variable
+        	{
+            	count_g++;
+                count_x = 0;
+        	}
+       
+        	if(count_g == 10)            //once count_g reaches 20, add to checker which will exit the loop.
+        	{
+                green_wave();
+            	g_checker++;
+                printf("Green object detected!\n");
+                count_g = 0;
+        	}
+            g_checker--;
+        }
+    
+    
+ 	   	if(b_checker < 1)        //as long as checker is still 0, keep looping the following...
+    	{
+       
+        	if(get_object_count(blue)>0)        //if there are any blue color blobs in view add to the count_b variable
+        	{
+            	count_b++;
+                count_x = 0;
+        	}
+       
+        	if(count_b == 10)            //once count_b reaches 20, add to checker which will exit the loop.
+        	{
+                orange_wave();
+            	b_checker++;
+                printf("Blue object detected!\n");
+                count_b = 0;
+        	}
+            b_checker--;
+        }
+        
+    }
+	camera_close();
+}
+
+	void forward()
+	{
+   		motor(lmotor,lspeed);
+   		motor(rmotor,rspeed);
+	}
+
+	void red_wave()
+	{	
+    	enable_servos();
+        set_servo_position(hand, 900);
+        msleep(hpause);
+        set_servo_position(hand, 1700);
+        msleep(hpause);
+        disable_servos();
+    }
+
+	void green_wave()
+	{	
+    	enable_servos();
+        set_servo_position(hand, 1000);
+        msleep(hpause);
+        set_servo_position(hand, 1200);
+        msleep(hpause);
+        disable_servos();
+    }
+
+	void orange_wave()
+	{	
+    	enable_servos();
+        set_servo_position(hand, 100);
+        msleep(hpause);
+        set_servo_position(hand, 1000);
+        msleep(hpause);
+        disable_servos();
+    }
+
+	  void whole_turn()
+	{
+  		  motor(lmotor,lslow);
+          motor(rmotor, 0);
+          motor(lmotor,lslow);
+          motor(rmotor, 0);
+          motor(lmotor,lslow);
+          motor(rmotor, 0);
+          motor(lmotor,lslow);
+          motor(rmotor, 0);
+    }
+	
+	void left_turn()
+     {
+          motor(rmotor,rslow);
+          motor(lmotor, 0);
+     }
