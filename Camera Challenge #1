@@ -30,7 +30,7 @@ void whole_turn();
 
 int main()
 {
-	camera_open_black();    //open the camera
+    camera_open_black();    //open the camera
     while (0 == 0){
     	camera_update();
     	msleep(100);
