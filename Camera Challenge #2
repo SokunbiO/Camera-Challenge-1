@@ -1,0 +1,128 @@
+#include <kipr/wombat.h>
+int lspeed = 90;
+int rspeed = 90;
+int rmotor = 0;
+int lmotor = 3;
+int pause = 1000;
+int rslow = 90;
+int lslow = 90;
+int half = 1000;
+int hand = 0;
+int hpause = 500;
+int counter = 0;
+int red = 0;
+int green = 1;
+int blue = 2;
+int r_checker = 0;
+int count_r = 0;
+int g_checker = 0;
+int b_checker = 0;
+int count_g = 0;
+int count_b = 0;
+int count_x = 0;
+    
+void forward();
+void red_wave();
+void green_wave();
+void orange_wave();
+void left_turn();
+void right_turn();
+
+int main()
+{
+	camera_open_black();    //open the camera
+    while (0 == 0){
+    	camera_update();
+      
+        while(r_checker < 1)        //as long as checker is still 0, keep looping the following...
+    	{
+            if(get_object_count(red) > 0)        //if there are any red color blobs in view add to the count_t variable
+            {
+               
+            	if(get_object_center_x(red, 0) < 81)
+            	{
+                	left_turn();
+                	printf("left turn\n");
+        		}
+            
+            	if(get_object_center_x(red, 0) > 81)
+            	{
+                	right_turn();
+                	printf("right turn\n");
+            	}
+            
+            }
+            if(get_object_center_y(red, 0) > 70)
+                r_checker++;
+            
+        	
+        }
+    }
+	camera_close();
+}
+
+	void forward()
+	{
+   		motor(lmotor,lspeed);
+   		motor(rmotor,rspeed);
+	}
+
+	void red_wave()
+	{	
+    	enable_servos();
+        set_servo_position(hand, 900);
+        msleep(hpause);
+        set_servo_position(hand, 1700);
+        msleep(hpause);
+        disable_servos();
+    }
+
+	void green_wave()
+	{	
+    	enable_servos();
+        set_servo_position(hand, 1000);
+        msleep(hpause);
+        set_servo_position(hand, 1200);
+        msleep(hpause);
+        disable_servos();
+    }
+
+	void orange_wave()
+	{	
+    	enable_servos();
+        set_servo_position(hand, 100);
+        msleep(hpause);
+        set_servo_position(hand, 1000);
+        msleep(hpause);
+        disable_servos();
+    }
+
+	  void whole_turn()
+	{
+  		  motor(lmotor,lslow);
+          motor(rmotor, 0);
+          motor(lmotor,lslow);
+          motor(rmotor, 0);
+          motor(lmotor,lslow);
+          motor(rmotor, 0);
+          motor(lmotor,lslow);
+          motor(rmotor, 0);
+    }
+	
+	void left_turn()
+     {
+          motor(rmotor,rslow);
+          motor(lmotor, 0);
+          msleep(pause);
+          ao();
+     }
+
+	void right_turn()
+    {
+        motor(rmotor, 0);
+        motor(lmotor, lslow);
+        msleep(pause);
+        ao();
+    }
+	
+	
