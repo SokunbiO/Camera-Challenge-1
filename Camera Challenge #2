@@ -30,12 +30,9 @@ void right_turn();
 
 int main()
 {
-	camera_open_black();    //open the camera
-    while (0 == 0){
+    camera_open_black();    //open the camera
+    while (analog(0) <= 2800){
     	camera_update();
-      
-        while(r_checker < 1)        //as long as checker is still 0, keep looping the following...
-    	{
             if(get_object_count(red) > 0)        //if there are any red color blobs in view add to the count_t variable
             {
                
@@ -50,12 +47,12 @@ int main()
                 	right_turn();
                 	printf("right turn\n");
             	}
-            
-            }
-            if(get_object_center_y(red, 0) > 70)
-                r_checker++;
-            
-        	
+                
+                if(get_object_center_x(red, 0) > 71 && get_object_center_x(red, 0) < 91){
+                    forward();
+                }
+           
+          	
         }
     }
 	camera_close();
@@ -67,39 +64,9 @@ int main()
    		motor(rmotor,rspeed);
 	}
 
-	void red_wave()
-	{	
-    	enable_servos();
-        set_servo_position(hand, 900);
-        msleep(hpause);
-        set_servo_position(hand, 1700);
-        msleep(hpause);
-        disable_servos();
-    }
-
-	void green_wave()
-	{	
-    	enable_servos();
-        set_servo_position(hand, 1000);
-        msleep(hpause);
-        set_servo_position(hand, 1200);
-        msleep(hpause);
-        disable_servos();
-    }
-
-	void orange_wave()
-	{	
-    	enable_servos();
-        set_servo_position(hand, 100);
-        msleep(hpause);
-        set_servo_position(hand, 1000);
-        msleep(hpause);
-        disable_servos();
-    }
-
-	  void whole_turn()
+	void whole_turn()
 	{
-  		  motor(lmotor,lslow);
+  	  motor(lmotor,lslow);
           motor(rmotor, 0);
           motor(lmotor,lslow);
           motor(rmotor, 0);
@@ -113,16 +80,11 @@ int main()
      {
           motor(rmotor,rslow);
           motor(lmotor, 0);
-          msleep(pause);
-          ao();
      }
 
 	void right_turn()
     {
         motor(rmotor, 0);
         motor(lmotor, lslow);
-        msleep(pause);
-        ao();
     }
-	
 	
