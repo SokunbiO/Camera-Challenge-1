@@ -1,0 +1,350 @@
+#include <kipr/wombat.h>
+int lspeed = 90;
+int rspeed = 90;
+int rmotor = 0;
+int lmotor = 3;
+int pause = 100;
+int rslow = 90;
+int lslow = 90;
+int half = 1000;
+int targetF = 2900;
+int frontA = 0;
+int hand = 2;
+int detect = 5;
+int hpause = 500;
+int counter = 0;
+int wcounter = 0;
+int line = 2000;
+int know = 0;
+int count = 0;
+int bLeftCount = 0;
+int bCount = 0;
+int cCount = 0;
+int lCount = 0;
+int rah = 0;
+
+
+void lilF();    
+void ALeft();
+void back_left();
+void corner();
+void big_back();
+void forward();
+void adjust();
+void left_turn();
+void right_turn();
+void backward();
+void knockOff();
+void small_backward();
+void lilLeft();
+void transport();
+void back_right();
+void adjust1();
+void fix();
+void adjust2();
+void big_left();
+void pivotRight();
+void pivotLeft();
+void helpme();
+void BRight();
+
+int main()
+{
+   shut_down_in(120.0);
+   enable_servos();
+   set_servo_position(2, 1800);
+   msleep(500);
+  while (know == 0){
+	forward();
+		if(analog(detect) > line){
+			know+=2;
+		}
+  }
+    fix();
+    
+    while(know > 1){
+       count++;
+       printf("count = %d\n", count);
+       if (analog(detect) > line){
+        left_turn();
+       }
+        // off line
+        if (analog(detect) < line){  
+       	 right_turn();
+        }
+        
+        if(analog(0) > line && count > 11000){
+       		set_servo_position(2, 450);
+      		msleep(100);
+            know--;
+        }
+   
+   }
+    
+    backward();
+    msleep(100);
+    backward();
+    msleep(100);
+    
+    while(rah < 10){
+		right_turn();
+    	msleep(100);
+		rah++;
+	}
+    
+    set_servo_position(2, 1800);
+    
+    rah = 0;
+    
+    while(rah < 10){
+        forward();
+        msleep(100);
+        rah++;
+    }
+    
+    rah = 0;
+    
+    while(rah < 20){
+        backward();
+        msleep(100);
+        rah++;
+    }
+    
+    set_servo_position(2, 630);
+    
+    rah = 0;
+    
+    while(rah < 10){
+        forward();
+        msleep(100);
+        rah++;
+    }
+    
+    rah = 0;
+    
+    while(rah > 15){
+        backward();
+        msleep(100);
+        rah++;
+    }
+    
+    
+    
+    
+       
+}
+
+	void fix()
+	{	
+        forward();
+    	msleep(200);
+    	forward();
+    	msleep(300);
+    	right_turn();
+    	msleep(300);
+    	right_turn();
+    	msleep(300);
+    	right_turn();
+    	backward();
+    	msleep(200);
+    	backward();
+    	msleep(200);
+    	backward();
+    	msleep(200);
+    	backward();
+    	msleep(200);
+    }
+	void forward()
+	{
+   		motor(lmotor,lspeed);
+   		motor(rmotor,rspeed);
+	}
+
+	//set position to 900, then pause and go to 1700, adding 1 to the wave counter so the robot can stop when it hits 5 times
+	void adjust()
+	{	
+        adjust2();
+        msleep(100);
+        adjust1();
+        msleep(100);
+        adjust2();
+        msleep(100);
+        adjust1();
+        msleep(100);
+    }
+  
+	void right_turn()
+	{
+          motor(lmotor,90);
+          motor(rmotor, 0);
+	}
+
+	void adjust1(){
+        int r = 0;
+        while(r < 3){
+            back_right();
+            r++;
+        }
+        r = 0;
+    }
+
+	void adjust2(){
+        int l = 0;
+        while(l < 3){
+            back_left();
+            l++;
+        }
+        l = 0;
+    }
+	
+     void left_turn()
+     {
+          motor(rmotor, 90);
+          motor(lmotor, 0);
+     }
+
+	 void back_left(){
+         motor(rmotor, -45);
+         motor(lmotor, 0);
+     }
+
+	 void curr(){
+         motor(rmotor, -rspeed);
+         motor(lmotor, -30);
+     } 
+  
+
+	 void back_right(){
+         motor(rmotor, 0);
+         motor(lmotor, -lspeed);
+     }
+
+	void backward()
+    {
+        motor(lmotor, -lspeed);
+        motor(rmotor, -rspeed);
+    }
+
+	void ALeft()
+    {
+         motor(rmotor, -87);
+         motor(lmotor, 90);
+    }
+
+	void small_backward()
+    {
+        motor(lmotor, -30);
+        motor(rmotor, -30);      
+    }
+	void big_left()   
+    {
+        int left = 0;
+        while(left <= 10){
+            left_turn();
+            msleep(100);
+            left++;
+        }
+    }
+
+ 	 void knockOff()
+     {
+        left_turn();
+    	msleep(250);
+        left_turn();
+   		msleep(250);
+        backward();
+       	msleep(250);
+        left_turn();
+    	msleep(250);
+        left_turn();
+   		msleep(250);
+        backward();
+       	msleep(250);
+     }
+	
+	void transport()
+    {
+        int fCount = 0;
+        int bCount = 0;
+        msleep(100);
+        set_servo_position(hand, 350);
+     	msleep(100);
+        lilF();
+        msleep(100);
+        lilF();
+        msleep(100);
+        lilF();
+        msleep(100);
+        lilF();
+        msleep(100);
+        lilF();
+        msleep(1000);
+        set_servo_position(hand, 1111);
+        msleep(hpause);
+        while(bCount < 10){    
+	    	backward();
+            msleep(100);
+            bCount++;
+        }
+        msleep(500);
+        set_servo_position(hand, 350);
+	    msleep(hpause);
+	    bCount = 0;
+        while(bCount < 3){
+            backward();
+            msleep(100);
+            bCount++;
+        }
+        msleep(100);
+	    set_servo_position(hand, 1111);
+	    msleep(hpause);
+        
+        fCount = 0;
+        while(fCount < 5){
+            forward();
+            msleep(100);
+            fCount++;
+        }
+        
+        msleep(100);
+        set_servo_position(hand, 350);
+	    msleep(hpause);
+        
+    }
+
+	void lilF(){
+        motor(lmotor,45);
+   		motor(rmotor,45);
+    }
+
+	void helpme(int c)
+    {
+        while(c > 0){
+            backward();
+            msleep(100);
+            c--;
+        }
+    }
+
+	void pivotRight(int c)     
+    {
+        while( c > 0){
+            ALeft();
+            msleep(100);
+            c--;
+        }
+    }
+
+	void BRight(){
+        motor(rmotor, 87);
+        motor(lmotor, -90);    
+    }
+
+	void pivotLeft(int c)
+    {
+        while( c > 0){
+            BRight();
+            msleep(100);
+            c--;
+        }
+    }
