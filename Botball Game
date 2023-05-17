@@ -1,0 +1,284 @@
+#include <kipr/wombat.h>
+int lmotor = 3;
+int rmotor = 0;
+int lspeed = 90;
+int rspeed = 90;
+int swCnt = 1;
+int detect = 3;
+int line = 1700;
+int start = 0;
+int pom = 2500;
+int thirdPom = 0;
+
+void backward();
+void stop();
+void fStop();
+void forward();
+void forwardL();
+void right_turn();
+void left_turn();
+void right_turns();
+void left_turns();
+void right_turnL();
+void left_turnL();
+void setServoPosX();
+void setServoPosY();
+void grab();
+void release();
+void fix();
+void fix2();
+
+
+int main()
+{
+    enable_servos();
+    set_servo_position(1, 1024);
+    msleep(100);
+    set_servo_position(0, 1680);
+    msleep(100);
+
+    while(start < 1){
+        forward();
+        if(analog(detect) > line){
+            start++;
+        }
+    }
+
+    msleep(100);
+    fStop();
+    set_servo_position(1, 1680);
+    msleep(50);
+    fix();
+    msleep(50);
+
+    msleep(100); 
+    while(swCnt < 7){
+        if(analog(5) > line){
+            right_turnL();
+        }
+        if (analog(detect) > line){
+            left_turnL();
+        }
+        // off line
+        if (analog(detect) < line){  
+            right_turnL();
+        }
+
+        if(analog(0) > pom && swCnt % 2 == 1 ){
+            forward();
+            msleep(200);
+            fStop();
+            msleep(50);
+            setServoPosX(1, 1600);
+            msleep(150);
+            swCnt++;
+        }
+        else if(analog(0) > pom && swCnt % 2 == 0){
+            forward();
+            msleep(150);
+            fStop();
+            msleep(50);
+            setServoPosY(1, 600);
+            msleep(150);
+            swCnt++;
+        }
+    }
+    while(swCnt >= 7 && swCnt < 9){
+        if (analog(detect) > line){
+            left_turnL();
+        }
+        // off line
+        if (analog(detect) < line){  
+            right_turnL();
+        }
+
+        if(analog(0) > 2500 && swCnt % 2 == 1 ){
+            forward();
+            msleep(20);
+            forward();
+            msleep(20);
+            fStop();
+            grab(1420);
+            msleep(10);
+            forwardL();  
+            msleep(50);
+            setServoPosX(1, 1600);
+            msleep(10);
+            set_servo_position(1, 600);
+            msleep(10);
+            setServoPosX(1, 1600);
+            msleep(150);
+            release(900);
+            swCnt++;
+        }
+        else if(analog(0) > 2500 && swCnt % 2 == 0){
+            forward();
+            msleep(20);
+            forward();
+            msleep(20);
+            forward();
+            msleep(20);
+            fStop();
+            grab(1420);
+            msleep(10);
+            forwardL();
+            msleep(50);
+            setServoPosY(1, 600);
+            msleep(10);
+            set_servo_position(1, 1600);
+            msleep(10);
+            setServoPosY(1, 600);
+            msleep(150);
+            release(900);
+            swCnt++;
+        }
+    }
+
+    fStop();
+    setServoPosY(1, 600);
+    left_turns(3);
+    msleep(10);
+    forward();
+    left_turns(3);
+    msleep(10);
+    forward();
+    return 0;
+}
+
+// say at what speed you want the robot to move forward at | lower values = slower | higher values  = faster.
+void right_turns(int turns){
+    int start = 1;
+    while(start <= turns){
+        right_turn();
+        msleep(50);
+    }
+}
+
+void left_turns(int turns){
+    int start = 1;
+    while(start <= turns){
+        left_turn();
+        msleep(50);
+    }
+}
+void forward(){
+    motor(lmotor, 90);
+    motor(rmotor, 90);
+    msleep(100);
+}
+
+void forwardL(){
+    motor(lmotor, 30);
+    motor(rmotor, 30);
+}
+
+void backward(){
+    motor(lmotor, -90);
+    motor(rmotor, -90);
+    msleep(100);
+}
+
+void right_turnL(){
+    motor(lmotor, 30);
+    motor(rmotor, 0);
+}
+
+void left_turnL(){
+    motor(lmotor, 0);
+    motor(rmotor, 50);
+}
+
+void right_turn(){
+    motor(lmotor, 90);
+    motor(rmotor, 0);
+}
+
+void left_turn(){
+    motor(lmotor, 0);
+    motor(rmotor, 90);
+}
+
+void stop(){
+    motor(lmotor, 0);
+    motor(rmotor, 0);
+}
+
+// stop for a while
+void fStop(){
+    motor(lmotor, 0);
+    motor(rmotor, 0);
+}
+
+void setServoPosX(int port, int pos){
+    while(pos > 600){
+        pos-=20;
+        set_servo_position(port, pos);
+        msleep(20);
+    }
+}
+
+void setServoPosY(int port, int pos){
+    while(pos < 1600){
+        pos+=20;
+        set_servo_position(port, pos);
+        msleep(20);
+    }
+}
+
+void grab(int pos){
+    while(pos > 900){
+        pos-=10;
+        set_servo_position(0, pos);
+        msleep(20);
+    }
+}
+
+void release(int pos){
+    while(pos < 1420){
+        pos+=50;
+        set_servo_position(0, pos);
+        msleep(20);
+    }
+}
+
+void fix()
+{	
+    forward();
+    msleep(200);
+    forward();
+    msleep(300);
+    right_turn();
+    msleep(300);
+    right_turn();
+    msleep(300);
+    right_turn();
+    backward();
+    msleep(200);
+    backward();
+    msleep(200);
+}
+
+void fix2()
+{
+    forward();
+    msleep(200);
+    forward();
+    msleep(300);
+    right_turn();
+    msleep(300);
+    backward();
+    msleep(300);
+    right_turn();
+    msleep(300);
+    backward();
+    msleep(300);
+    right_turn();
+    backward();
+    msleep(200);
+    backward();
+    msleep(200);
+    backward();
+    msleep(200);
+    backward();
+    msleep(200);
+}
