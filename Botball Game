@@ -145,7 +145,6 @@ int main()
     return 0;
 }
 
-// say at what speed you want the robot to move forward at | lower values = slower | higher values  = faster.
 void right_turns(int turns){
     int start = 1;
     while(start <= turns){
